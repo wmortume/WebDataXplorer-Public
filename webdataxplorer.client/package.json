@@ -1,0 +1,44 @@
+{
+    "name": "webdataxplorer.client",
+    "private": true,
+    "version": "0.0.0",
+    "type": "module",
+    "scripts": {
+        "dev": "vite",
+        "build": "vite build",
+        "lint": "eslint .",
+        "preview": "vite preview",
+        "format": "prettier --write .",
+        "watch": "onchange \"src/**/*.{js,jsx,ts,tsx,css,json}\" -- npm run format"
+    },
+    "dependencies": {
+        "@tanstack/react-query": "^5.62.11",
+        "@tanstack/react-query-devtools": "^5.62.11",
+        "dompurify": "^3.2.3",
+        "primeflex": "^3.3.1",
+        "primeicons": "^7.0.0",
+        "primereact": "^10.8.5",
+        "react": "^18.3.1",
+        "react-dom": "^18.3.1"
+    },
+    "devDependencies": {
+        "@eslint/js": "^9.15.0",
+        "@types/react": "^18.3.16",
+        "@types/react-dom": "^18.3.5",
+        "@vitejs/plugin-react": "^4.3.4",
+        "eslint": "^9.15.0",
+        "eslint-config-prettier": "^9.1.0",
+        "eslint-plugin-react": "^7.37.2",
+        "eslint-plugin-react-hooks": "^5.0.0",
+        "eslint-plugin-react-refresh": "^0.4.14",
+        "globals": "^15.12.0",
+        "onchange": "^7.1.0",
+        "prettier": "^3.4.2",
+        "vite": "^6.0.1"
+    },
+    "-vs-binding": {
+        "ProjectOpened": [
+            "watch"
+        ]
+    }
+}
