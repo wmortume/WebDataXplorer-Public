@@ -61,7 +61,7 @@ namespace WebDataXplorer.Server.Repositories
         {
             if (!string.IsNullOrEmpty(_datasetId) && !string.IsNullOrEmpty(_blobContainerName) && !string.IsNullOrEmpty(_blobStorageAccountName))
             {
-                var payload = new //Using anonymous type instead of nested classes for simplicity and single-use
+                var payload = new // Using anonymous type instead of nested classes for simplicity and single-use
                 {
                     deliver = new
                     {
