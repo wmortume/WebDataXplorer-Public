@@ -1,0 +1,137 @@
+{
+  "name": "copy_json_to_sql",
+  "properties": {
+    "activities": [
+      {
+        "name": "Copy JSON Blob To SQL DB",
+        "type": "Copy",
+        "dependsOn": [],
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30,
+          "secureOutput": false,
+          "secureInput": false
+        },
+        "userProperties": [],
+        "typeProperties": {
+          "source": {
+            "type": "JsonSource",
+            "storeSettings": {
+              "type": "AzureBlobStorageReadSettings",
+              "recursive": true,
+              "enablePartitionDiscovery": false
+            },
+            "formatSettings": {
+              "type": "JsonReadSettings"
+            }
+          },
+          "sink": {
+            "type": "AzureSqlSink",
+            "writeBehavior": "upsert",
+            "upsertSettings": {
+              "useTempDB": true,
+              "keys": [
+                "inventory_item_id"
+              ]
+            },
+            "sqlWriterUseTableLock": false,
+            "disableMetricsCollection": false
+          },
+          "enableStaging": false,
+          "translator": {
+            "type": "TabularTranslator",
+            "mappings": [
+              {
+                "source": {
+                  "path": "$['url']"
+                },
+                "sink": {
+                  "name": "url",
+                  "type": "String"
+                }
+              },
+              {
+                "source": {
+                  "path": "$['inventory_item_id']"
+                },
+                "sink": {
+                  "name": "inventory_item_id",
+                  "type": "String"
+                }
+              },
+              {
+                "source": {
+                  "path": "$['timestamp']"
+                },
+                "sink": {
+                  "name": "timestamp",
+                  "type": "DateTime"
+                }
+              } //...
+            ]
+          }
+        },
+        "inputs": [
+          {
+            "referenceName": "json_blob",
+            "type": "DatasetReference",
+            "parameters": {
+              "container_name": "", // Set value
+              "file_name": {
+                "value": "@pipeline().parameters.latestFileName",
+                "type": "Expression"
+              }
+            }
+          }
+        ],
+        "outputs": [
+          {
+            "referenceName": "sql_table",
+            "type": "DatasetReference",
+            "parameters": {
+              "schema": "dbo",
+              "table": "InventoryItem"
+            }
+          }
+        ]
+      },
+      {
+        "name": "SQL DB Clean Up",
+        "type": "SqlServerStoredProcedure",
+        "dependsOn": [
+          {
+            "activity": "Copy JSON Blob To SQL DB",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          }
+        ],
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30,
+          "secureOutput": false,
+          "secureInput": false
+        },
+        "userProperties": [],
+        "typeProperties": {
+          "storedProcedureName": "[dbo].[DBCleanUp]"
+        },
+        "linkedServiceName": {
+          "referenceName": "AzureSQLDB",
+          "type": "LinkedServiceReference"
+        }
+      }
+    ],
+    "parameters": {
+      "latestFileName": {
+        "type": "string"
+      }
+    },
+    "folder": {
+      "name": "HTTP_SQL_ETL"
+    },
+    "annotations": []
+  }
+}

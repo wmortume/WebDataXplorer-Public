@@ -1,0 +1,28 @@
+{
+	"name": "BlobCreatedTrigger",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Started",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "copy_json_to_sql",
+					"type": "PipelineReference"
+				},
+				"parameters": {
+					"latestFileName": "@triggerBody().fileName"
+				}
+			}
+		],
+		"type": "BlobEventsTrigger",
+		"typeProperties": {
+			"blobPathBeginsWith": "", // Set value
+			"blobPathEndsWith": ".json",
+			"ignoreEmptyBlobs": true,
+			"scope": "", // Set value
+			"events": [
+				"Microsoft.Storage.BlobCreated"
+			]
+		}
+	}
+}

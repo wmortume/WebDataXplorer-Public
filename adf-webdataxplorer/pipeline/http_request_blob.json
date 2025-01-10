@@ -1,0 +1,111 @@
+{
+	"name": "http_request_blob",
+	"properties": {
+		"activities": [
+			{
+				"name": "PostToBlob",
+				"type": "WebActivity",
+				"dependsOn": [
+					{
+						"activity": "GetKeyVaultBearerTokenSecret",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "GetKeyVaultStorageKeySecret",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": true
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"method": "POST",
+					"headers": {
+						"Authorization": {
+							"value": "Bearer @{activity('GetKeyVaultBearerTokenSecret').output.value}",
+							"type": "Expression"
+						},
+						"Content-Type": "application/json"
+					},
+					"url": {
+						"value": "@pipeline().parameters.Url",
+						"type": "Expression"
+					},
+					"body": {
+						"value": "{\n  \"deliver\": {\n    \"type\": \"azure\",\n    \"filename\": {\n      \"template\": \"{[snapshot_id]}_{[snapshot_datetime]}\",\n      \"extension\": \"json\"\n    },\n    \"credentials\": {\n      \"account\": \"@{pipeline().parameters.StorageAccount}\",\n      \"key\": \"@{activity('GetKeyVaultStorageKeySecret').output.value}\"\n    },\n    \"container\": \"@{pipeline().parameters.Container}\"\n  },\n  \"input\": @{pipeline().parameters.QueryArray}\n}",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "GetKeyVaultBearerTokenSecret",
+				"type": "WebActivity",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": true,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"method": "GET",
+					"url": "https://webdataxplorer-keyvault.vault.azure.net/secrets/BrightDataBearerToken?api-version=7.4",
+					"authentication": {
+						"type": "MSI",
+						"resource": "https://vault.azure.net"
+					}
+				}
+			},
+			{
+				"name": "GetKeyVaultStorageKeySecret",
+				"type": "WebActivity",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": true,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"method": "GET",
+					"url": "https://webdataxplorer-keyvault.vault.azure.net/secrets/StorageAccessKey?api-version=7.4",
+					"authentication": {
+						"type": "MSI",
+						"resource": "https://vault.azure.net"
+					}
+				}
+			}
+		],
+		"parameters": {
+			"Url": {
+				"type": "String"
+			},
+			"StorageAccount": {
+				"type": "String"
+			},
+			"Container": {
+				"type": "String"
+			},
+			"QueryArray": {
+				"type": "array"
+			}
+		},
+		"folder": {
+			"name": "HTTP_SQL_ETL"
+		},
+		"annotations": []
+	}
+}

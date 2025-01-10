@@ -1,0 +1,11 @@
+{
+	"name": "AzureBlobStorageJSON",
+	"properties": {
+		"annotations": [],
+		"type": "AzureBlobStorage",
+		"typeProperties": {
+			"serviceEndpoint": "https://stwebdataxplorer.blob.core.windows.net/",
+			"accountKind": "StorageV2"
+		}
+	}
+}
