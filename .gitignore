@@ -364,3 +364,4 @@ FodyWeavers.xsd
 /WebDataXplorer.Server/WebDataXplorer.Server.http
 /WebDataXplorer.Server/wwwroot
 /WebDataXplorer.Server/Properties/ServiceDependencies/webdataxplorer - Web Deploy
+/WebDataXplorer.Server/Properties/ServiceDependencies/webdataxplorer-public - Web Deploy
